@@ -1,0 +1,7 @@
+<label for="curr">Filter by currency: </label>
+<select id="curr" (change)="changeHandler($event)">
+  <option value="{{currency.USD}}" selected>{{currency.USD}}</option>
+  <option value="{{currency.EUR}}">{{currency.EUR}}</option>
+</select>
+
+

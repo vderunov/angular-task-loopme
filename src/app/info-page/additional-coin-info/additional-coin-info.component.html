@@ -1,0 +1,17 @@
+<h1>Cryptocurrency Details: {{coin.name}}</h1>
+<button routerLink="/" class="btn">Back</button>
+<div *ngIf="coin">
+  <ul>
+    <li>Name: {{coin.name}}</li>
+    <li>Description: {{coin.description}}</li>
+    <li>Description: {{coin.description}}</li>
+    <li>Type: {{coin.type}}</li>
+    <li>Icon: <img src="{{coin.iconUrl}}" alt="img-{{coin.name}}" class="coin-icon"></li>
+    <li> Links:
+      <ul>
+        <li *ngFor="let c of coin.links"><a href="{{c.url}}" target="_blank">{{c.type}}</a></li>
+      </ul>
+    </li>
+  </ul>
+</div>
+

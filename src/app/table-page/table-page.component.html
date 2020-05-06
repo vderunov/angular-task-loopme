@@ -1,0 +1,23 @@
+<app-filter-currency></app-filter-currency>
+<app-filter-time-period></app-filter-time-period>
+<app-search></app-search>
+<app-pagination></app-pagination>
+<app-export-csv [dataPrimitives]="dataPrimitives"></app-export-csv>
+
+
+<uikit-grid
+  [gridDataRows]="dataPrimitives"
+  [settings]="settingsPrimitives"
+  (gridAction)="getActionGrid($event)"
+>
+</uikit-grid>
+
+<app-error-message *ngIf="!isExistingId"></app-error-message>
+
+
+
+
+
+
+
+

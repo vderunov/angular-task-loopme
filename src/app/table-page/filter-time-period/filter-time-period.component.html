@@ -1,0 +1,6 @@
+<label for="timePer">Filter by time period: </label>
+<select id="timePer" (change)="changeHandler($event)">
+  <option value="{{timePeriod.DAY}}" selected>{{timePeriod.DAY}}</option>
+  <option value="{{timePeriod.WEEK}}">{{timePeriod.WEEK}}</option>
+  <option value="{{timePeriod.MONTH}}">{{timePeriod.MONTH}}</option>
+</select>

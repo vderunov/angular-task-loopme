@@ -1,0 +1,34 @@
+import { Component, Input } from '@angular/core';
+import { ExportToCsv } from 'export-to-csv';
+import { IDataPrimitives, IExportCsvComponent } from './interfaces';
+
+@Component({
+  selector: 'app-export-csv',
+  templateUrl: './export-csv.component.html',
+  styleUrls: ['./export-csv.component.scss']
+})
+export class ExportCsvComponent implements IExportCsvComponent {
+
+  @Input() dataPrimitives: any[];
+
+  public exportToCsv(): void {
+    const options = {
+      fieldSeparator: ',',
+      quoteStrings: '"',
+      decimalSeparator: '.',
+      showLabels: true,
+      showTitle: true,
+      title: 'My cryptocurrency CSV',
+      useTextFile: false,
+      useBom: true,
+      useKeysAsHeaders: true,
+    };
+    const csvExporter = new ExportToCsv(options);
+
+    const coins: IDataPrimitives[] = this.dataPrimitives.map(coin => ({
+      ...coin, name: coin.name.name
+    }));
+
+    csvExporter.generateCsv(coins);
+  }
+}

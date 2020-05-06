@@ -1,1 +1,8 @@
-/* You can add global styles to this file, and also import other style files */
+@import "~@loopme/uikit/lib/uikit";
+
+@font-face {
+  font-family: 'uikitIcon';
+  src: url('~@loopme/uikit/icons/uikitIcon.eot?#iefix') format('embedded-opentype'),
+  url('~@loopme/uikit/icons/uikitIcon.woff2') format('woff2'),
+  url('~@loopme/uikit/icons/uikitIcon.woff') format('woff');
+}
