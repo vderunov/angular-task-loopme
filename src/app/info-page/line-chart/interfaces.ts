@@ -1,3 +1,5 @@
+import { CoinsALLProp } from '../../shared/interfaces';
+
 export interface IHistory {
   price: string;
   timestamp: number;
@@ -21,9 +23,8 @@ export interface IData {
   };
 }
 
-
 export interface ILineChartComponent {
-  coin: any;
+  coin: CoinsALLProp;
   history: IHistory[];
   isChartReady: boolean;
   currencyParam: string;
@@ -34,11 +35,11 @@ export interface ILineChartComponent {
 
   fetchData(): void;
 
-  createChartData(data): void;
+  createChartData(data: IData): void;
 
-  changeCurrHandler($event: any): void;
+  changeCurrHandler(event: Event): void;
 
-  changeTimePeriodHandler($event: any): void;
+  changeTimePeriodHandler(event: Event): void;
 }
 
 

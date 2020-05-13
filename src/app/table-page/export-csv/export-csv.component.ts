@@ -1,6 +1,8 @@
 import { Component, Input } from '@angular/core';
+
 import { ExportToCsv } from 'export-to-csv';
 import { IDataPrimitives, IExportCsvComponent } from './interfaces';
+import { ButtonStyleType } from '@loopme/uikit';
 
 @Component({
   selector: 'app-export-csv',
@@ -8,8 +10,10 @@ import { IDataPrimitives, IExportCsvComponent } from './interfaces';
   styleUrls: ['./export-csv.component.scss']
 })
 export class ExportCsvComponent implements IExportCsvComponent {
+  @Input() dataPrimitives: IDataPrimitives[];
 
-  @Input() dataPrimitives: any[];
+  public ButtonStyleType = ButtonStyleType;
+  public btnText = 'Export to csv';
 
   public exportToCsv(): void {
     const options = {
@@ -23,9 +27,9 @@ export class ExportCsvComponent implements IExportCsvComponent {
       useBom: true,
       useKeysAsHeaders: true,
     };
-    const csvExporter = new ExportToCsv(options);
 
-    const coins: IDataPrimitives[] = this.dataPrimitives.map(coin => ({
+    const csvExporter = new ExportToCsv(options);
+    const coins = this.dataPrimitives.map(coin => ({
       ...coin, name: coin.name.name
     }));
 

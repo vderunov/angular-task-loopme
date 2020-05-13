@@ -1,5 +1,5 @@
 export interface IExportCsvComponent {
-  dataPrimitives: any[];
+  dataPrimitives: IDataPrimitives[];
 
   exportToCsv(): void;
 }
@@ -8,7 +8,9 @@ export interface IDataPrimitives {
   change: number;
   description: string;
   id: number;
-  name: string;
+  name: {
+    name: string
+  };
   numberOfExchanges: number;
   numberOfMarkets: number;
   price: number;

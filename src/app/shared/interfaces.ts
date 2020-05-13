@@ -1,5 +1,4 @@
 import { GridLink } from '@loopme/uikit';
-import { Subject } from 'rxjs';
 
 export interface IState {
   base: string;
@@ -52,9 +51,11 @@ export interface Coin {
   change: number;
 }
 
-export interface ICoinService {
-  state: object;
-  stream$: Subject<object>;
-
-  setState(action: object): void;
+export interface DefResponse {
+  status: string;
+  data: {
+    stats: object,
+    base: object,
+    coins: []
+  };
 }

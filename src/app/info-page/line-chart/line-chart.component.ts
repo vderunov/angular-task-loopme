@@ -1,8 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
+
 import { ChartTypes, Dimension } from '@loopme/uikit';
 import { CoinService } from '../../shared/coin.service';
 import { IChartLineItem, IData, IHistory, ILineChartComponent } from './interfaces';
 import { Currency, TimePeriod } from './enums';
+import { CoinsALLProp } from '../../shared/interfaces';
 
 @Component({
   selector: 'app-line-chart',
@@ -10,7 +12,8 @@ import { Currency, TimePeriod } from './enums';
   styleUrls: ['./line-chart.component.scss']
 })
 export class LineChartComponent implements OnInit, ILineChartComponent {
-  @Input() coin: any;
+  @Input() coin: CoinsALLProp;
+
   public history: IHistory[] = [];
   public isChartReady = false;
   public currency = Currency;
@@ -20,7 +23,6 @@ export class LineChartComponent implements OnInit, ILineChartComponent {
   public chartTypes = ChartTypes;
   public editing: boolean;
   public chartLineData: IChartLineItem[];
-
   public activeLineMetrics = [
     {yAxisKey: 'price', xAxisKey: 'date', name: 'Price, $', dimension: Dimension.DOLLARS, color: '#3f51b5'},
   ];
@@ -28,7 +30,7 @@ export class LineChartComponent implements OnInit, ILineChartComponent {
   constructor(private coinService: CoinService) {
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.fetchData();
   }
 
@@ -48,13 +50,13 @@ export class LineChartComponent implements OnInit, ILineChartComponent {
     this.isChartReady = true;
   }
 
-  public changeCurrHandler($event: any): void {
-    this.currencyParam = $event.target.value;
+  public changeCurrHandler(event: Event): void {
+    this.currencyParam = (event.target as HTMLInputElement).value;
     this.fetchData();
   }
 
-  public changeTimePeriodHandler($event: any): void {
-    this.timeFrameParam = $event.target.value;
+  public changeTimePeriodHandler(event: Event): void {
+    this.timeFrameParam = (event.target as HTMLInputElement).value;
     this.fetchData();
   }
 }

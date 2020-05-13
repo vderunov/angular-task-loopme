@@ -1,5 +1,5 @@
 <h1>Cryptocurrency Details: {{coin.name}}</h1>
-<button routerLink="/" class="btn">Back</button>
+<uikit-button routerLink="/" [styleTypes]="[ButtonStyleType.PRIMARY]">{{btnText}}</uikit-button>
 <div *ngIf="coin">
   <ul>
     <li>Name: {{coin.name}}</li>

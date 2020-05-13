@@ -1,18 +1,39 @@
-<app-filter-currency></app-filter-currency>
-<app-filter-time-period></app-filter-time-period>
-<app-search></app-search>
-<app-pagination></app-pagination>
-<app-export-csv [dataPrimitives]="dataPrimitives"></app-export-csv>
+<uikit-notifications [options]="options" class="notification"></uikit-notifications>
 
+<label for="curr">Filter by currency: </label>
+<select id="curr" [formControl]="currencyControl">
+  <option value="{{currency.USD}}">{{currency.USD}}</option>
+  <option value="{{currency.EUR}}">{{currency.EUR}}</option>
+</select>
+
+<label for="timePer">Filter by time period: </label>
+<select id="timePer" [(ngModel)]="timePeriodValue" (ngModelChange)="changeTimePeriod()">
+  <option [ngValue]="timePeriod.DAY">{{timePeriod.DAY}}</option>
+  <option [ngValue]="timePeriod.WEEK">{{timePeriod.WEEK}}</option>
+  <option [ngValue]="timePeriod.MONTH">{{timePeriod.MONTH}}</option>
+</select>
+
+<uikit-input
+  placeholder="Search..."
+  (input)="searchBySymbols($event)">
+</uikit-input>
+
+<uikit-pagination
+  [currentPage]="1"
+  [totalItems]="100"
+  [itemsPerPage]="15"
+  (onPageChangeEvent)="onPaginationChange($event)">
+</uikit-pagination>
+
+<app-export-csv [dataPrimitives]="dataPrimitives"></app-export-csv>
 
 <uikit-grid
   [gridDataRows]="dataPrimitives"
   [settings]="settingsPrimitives"
-  (gridAction)="getActionGrid($event)"
->
+  (gridAction)="getActionGrid($event)">
 </uikit-grid>
 
-<app-error-message *ngIf="!isExistingId"></app-error-message>
+
 
 
 

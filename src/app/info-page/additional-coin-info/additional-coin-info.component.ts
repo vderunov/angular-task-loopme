@@ -1,5 +1,8 @@
 import { Component, Input } from '@angular/core';
 
+import { ButtonStyleType } from '@loopme/uikit';
+import { CoinsALLProp } from '../../shared/interfaces';
+
 
 @Component({
   selector: 'app-additional-coin-info',
@@ -8,6 +11,8 @@ import { Component, Input } from '@angular/core';
 })
 export class AdditionalCoinInfoComponent {
 
-  @Input() coin: any;
+  @Input() coin: CoinsALLProp;
 
+  public ButtonStyleType = ButtonStyleType;
+  public btnText = 'Back';
 }

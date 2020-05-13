@@ -1,53 +1,64 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject, throwError } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
+
+import { Observable, Subject, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { CoinsALLProp, IState } from './interfaces';
+import { CoinsALLProp, DefResponse, IState } from './interfaces';
+import { catchError, map } from 'rxjs/operators';
 import { IData } from '../info-page/line-chart/interfaces';
-import { catchError } from 'rxjs/operators';
+import { RequestState } from '../table-page/request-state.model';
+import { Currency, TimePeriod } from '../table-page/enums';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class CoinService {
-
-  private data$: Subject<object> = new Subject<object>();
-  public streamCoins$: Observable<any> = this.data$.asObservable();
   private params = new HttpParams();
-  public arrayCoins: CoinsALLProp[];
-  public isExistingId: boolean | object = true;
+  private subject$ = new Subject<CoinsALLProp[]>();
+  private requestState: RequestState = new RequestState(Currency.USD, TimePeriod.DAY, 0, 15, 'desc', '');
+  public arrayCoinsLoaded: CoinsALLProp[] = [];
+  public coinById: CoinsALLProp;
 
   constructor(private http: HttpClient) {
   }
 
-  public fetchData(state) {
-    this.setParams(state);
-    this.http.get(environment.baseUrl + '/coins' + '?&' + this.params)
-      .pipe(
-        catchError(err => {
-          console.log(err);
-          return throwError(err);
-        })
-      )
-      .subscribe((res: any): any => {
-        this.arrayCoins = res.data.coins;
-        this.data$.next(this.arrayCoins);
-      }, err => {
+  public getCoinsBySubscription(): Observable<any> {
+    return this.subject$.asObservable();
+  }
+
+  public setRequestState(newSettings: object): void {
+    this.requestState = {
+      ...this.requestState,
+      ...newSettings
+    };
+    this.setParams(this.requestState);
+    this.fetchData().subscribe(res => {
+      this.subject$.next(res);
+    });
+  }
+
+  public fetchData(): Observable<CoinsALLProp[]> {
+    return this.http.get<DefResponse>(environment.baseUrl + '/coins?&' + this.params).pipe(
+      map(v => {
+        this.arrayCoinsLoaded = v.data.coins;
+        return this.arrayCoinsLoaded;
+      }),
+      catchError(err => {
         console.log(err);
-      });
+        return throwError(err);
+      })
+    );
   }
 
   public setParams(state: IState) {
-    for (const prop in state) {
-      if (state.hasOwnProperty(prop)) {
-        if (state[prop]) {
-          this.params = this.params.set(prop, state[prop]);
-        } else {
-          this.params = this.params.delete(prop);
-        }
+    Object.keys(state).forEach(k => {
+      if (state[k] !== '') {
+        this.params = this.params.set(k, state[k]);
+      } else {
+        this.params = this.params.delete(k);
       }
-    }
+    });
   }
 
   public fetchCoinHistory(coinId, timeFrame = '30d', currency = 'USD'): Observable<any> {
@@ -60,8 +71,12 @@ export class CoinService {
       );
   }
 
-  public getById(id: number, coins = this.arrayCoins) {
-    this.isExistingId = coins.find(coin => coin.id === id);
-    return this.isExistingId;
+  public getById(id: number): Observable<CoinsALLProp> {
+    return this.fetchData().pipe(
+      map(v => {
+          this.coinById = v.find(coin => coin.id === id);
+          return this.coinById;
+        }
+      ));
   }
 }
