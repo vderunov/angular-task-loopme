@@ -14,14 +14,14 @@ import { Currency, TimePeriod } from '../table-page/enums';
   providedIn: 'root'
 })
 export class CoinService {
-  private params = new HttpParams();
-  private subject$ = new Subject<CoinsALLProp[]>();
-  private requestState: RequestState = new RequestState(Currency.USD, TimePeriod.DAY, 0, 15, 'desc', '');
   public arrayCoinsLoaded: CoinsALLProp[] = [];
   public coinById: CoinsALLProp;
 
-  constructor(private http: HttpClient) {
-  }
+  private params = new HttpParams();
+  private subject$ = new Subject<CoinsALLProp[]>();
+  private requestState: RequestState = new RequestState(Currency.USD, TimePeriod.DAY, 0, 15, 'desc', '');
+
+  constructor(private http: HttpClient) { }
 
   public getCoinsBySubscription(): Observable<any> {
     return this.subject$.asObservable();

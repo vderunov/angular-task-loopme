@@ -13,8 +13,7 @@ import { CoinsALLProp } from '../shared/interfaces';
 export class InfoPageComponent implements OnInit {
   public coin: CoinsALLProp;
 
-  constructor(private route: ActivatedRoute, private coinService: CoinService) {
-  }
+  constructor(private route: ActivatedRoute, private coinService: CoinService) { }
 
   public ngOnInit(): void {
     this.coin = this.coinService.coinById;

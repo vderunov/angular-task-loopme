@@ -33,8 +33,7 @@ export class TablePageComponent implements OnInit, OnDestroy, ITableComponent {
     lastOnBottom: false,
   };
 
-  constructor(private coinService: CoinService, private router: Router) {
-  }
+  constructor(private coinService: CoinService, private router: Router) { }
 
   public ngOnInit(): void {
     if (this.coinService.arrayCoinsLoaded) {

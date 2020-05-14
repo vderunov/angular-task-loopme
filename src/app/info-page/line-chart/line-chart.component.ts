@@ -27,8 +27,7 @@ export class LineChartComponent implements OnInit, ILineChartComponent {
     {yAxisKey: 'price', xAxisKey: 'date', name: 'Price, $', dimension: Dimension.DOLLARS, color: '#3f51b5'},
   ];
 
-  constructor(private coinService: CoinService) {
-  }
+  constructor(private coinService: CoinService) { }
 
   public ngOnInit(): void {
     this.fetchData();
