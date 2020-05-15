@@ -9,10 +9,13 @@ import { NotificationsService, NotificationTypes } from '@loopme/uikit';
 @Injectable({providedIn: 'root'})
 export class IdGuard implements CanActivate {
 
-  constructor(private coinService: CoinService, private router: Router, private notificationsService: NotificationsService) {
-  }
+  constructor(
+    private coinService: CoinService,
+    private router: Router,
+    private notificationsService: NotificationsService) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
+    const NOTIFICATION_DELAY = 1000;
     return this.coinService.getById(+route.params.id).pipe(
       map(value => {
         if (!!value) {
@@ -20,8 +23,8 @@ export class IdGuard implements CanActivate {
         } else {
           setTimeout(() => {
             this.notificationsService.create(NotificationTypes.WARNING, `
-               This id doesn't exist`);
-          }, 1000);
+               This id (№${+route.params.id}) doesn't exist`);
+          }, NOTIFICATION_DELAY);
           this.router.navigate(['']);
         }
       }),

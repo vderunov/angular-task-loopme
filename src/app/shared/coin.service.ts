@@ -40,7 +40,7 @@ export class CoinService {
 
   public fetchData(): Observable<CoinsALLProp[]> {
     return this.http.get<DefResponse>(environment.baseUrl + '/coins?&' + this.params).pipe(
-      map(v => {
+      map((v: DefResponse) => {
         this.arrayCoinsLoaded = v.data.coins;
         return this.arrayCoinsLoaded;
       }),
@@ -73,7 +73,7 @@ export class CoinService {
 
   public getById(id: number): Observable<CoinsALLProp> {
     return this.fetchData().pipe(
-      map(v => {
+      map((v: CoinsALLProp[]) => {
           this.coinById = v.find(coin => coin.id === id);
           return this.coinById;
         }

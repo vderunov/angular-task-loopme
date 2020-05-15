@@ -20,8 +20,9 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 export class TablePageComponent implements OnInit, OnDestroy, ITableComponent {
   public dataPrimitives = TablePageData.dataPrimitives;
   public settingsPrimitives = TablePageData.settingsPrimitives;
-  public subscription: Subscription;
+  public subscriptionGetCoins: Subscription;
   public subscriptionFetch: Subscription;
+  public subscriptionSearchBySymbols: Subscription;
   public currency = Currency;
   public timePeriod = TimePeriod;
   public searchBySymbols$ = new Subject<string>();
@@ -40,13 +41,13 @@ export class TablePageComponent implements OnInit, OnDestroy, ITableComponent {
       this.createCoins(this.coinService.arrayCoinsLoaded);
     }
 
-    this.subscription = this.coinService.getCoinsBySubscription().subscribe(result => {
+    this.subscriptionGetCoins = this.coinService.getCoinsBySubscription().subscribe(result => {
       if (result[0]) {
         this.createCoins(result);
       }
     });
 
-    this.searchBySymbols$.pipe(
+    this.subscriptionSearchBySymbols = this.searchBySymbols$.pipe(
       debounceTime(1000),
       distinctUntilChanged()
     ).subscribe(value => {
@@ -107,8 +108,9 @@ export class TablePageComponent implements OnInit, OnDestroy, ITableComponent {
     this.coinService.setRequestState({timePeriod: this.timePeriodValue});
   }
 
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+  public ngOnDestroy(): void {
+    this.subscriptionGetCoins.unsubscribe();
     this.subscriptionFetch.unsubscribe();
+    this.subscriptionSearchBySymbols.unsubscribe();
   }
 }

@@ -1,19 +1,21 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 
 import { ChartTypes, Dimension } from '@loopme/uikit';
 import { CoinService } from '../../shared/coin.service';
 import { IChartLineItem, IData, IHistory, ILineChartComponent } from './interfaces';
 import { Currency, TimePeriod } from './enums';
 import { CoinsALLProp } from '../../shared/interfaces';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-line-chart',
   templateUrl: './line-chart.component.html',
   styleUrls: ['./line-chart.component.scss']
 })
-export class LineChartComponent implements OnInit, ILineChartComponent {
+export class LineChartComponent implements OnInit, OnDestroy, ILineChartComponent {
   @Input() coin: CoinsALLProp;
 
+  public subscriptionFetch: Subscription;
   public history: IHistory[] = [];
   public isChartReady = false;
   public currency = Currency;
@@ -34,9 +36,10 @@ export class LineChartComponent implements OnInit, ILineChartComponent {
   }
 
   public fetchData(): void {
-    this.coinService.fetchCoinHistory(this.coin.id, this.timeFrameParam, this.currencyParam).subscribe((result: IData) => {
-      this.createChartData(result);
-    });
+    this.subscriptionFetch = this.coinService.fetchCoinHistory(this.coin.id, this.timeFrameParam, this.currencyParam)
+      .subscribe((result: IData) => {
+        this.createChartData(result);
+      });
   }
 
   public createChartData(data: IData): void {
@@ -57,5 +60,9 @@ export class LineChartComponent implements OnInit, ILineChartComponent {
   public changeTimePeriodHandler(event: Event): void {
     this.timeFrameParam = (event.target as HTMLInputElement).value;
     this.fetchData();
+  }
+
+  public ngOnDestroy(): void {
+    this.subscriptionFetch.unsubscribe();
   }
 }

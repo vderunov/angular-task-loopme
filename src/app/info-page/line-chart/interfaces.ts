@@ -1,4 +1,5 @@
 import { CoinsALLProp } from '../../shared/interfaces';
+import { Subscription } from 'rxjs';
 
 export interface IHistory {
   price: string;
@@ -24,6 +25,7 @@ export interface IData {
 }
 
 export interface ILineChartComponent {
+  subscriptionFetch: Subscription;
   coin: CoinsALLProp;
   history: IHistory[];
   isChartReady: boolean;

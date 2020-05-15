@@ -1,14 +1,16 @@
+import { FormControl } from '@angular/forms';
+
 import { TablePageData } from './table-page-data';
 import { CoinsALLProp } from '../shared/interfaces';
 import { IGridActionData, IPaginationEvent } from '@loopme/uikit';
 import { Subject, Subscription } from 'rxjs';
-import { FormControl } from '@angular/forms';
 
 export interface ITableComponent {
   dataPrimitives: TablePageData;
   settingsPrimitives: TablePageData;
-  subscription: Subscription;
+  subscriptionGetCoins: Subscription;
   subscriptionFetch: Subscription;
+  subscriptionSearchBySymbols: Subscription;
   searchBySymbols$: Subject<any>;
   currencyControl: FormControl;
   timePeriodValue: string;
