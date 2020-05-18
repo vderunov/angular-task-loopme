@@ -4,6 +4,7 @@ import { TablePageData } from './table-page-data';
 import { CoinsALLProp } from '../shared/interfaces';
 import { IGridActionData, IPaginationEvent } from '@loopme/uikit';
 import { Subject, Subscription } from 'rxjs';
+import { TimePeriod } from './enums';
 
 export interface ITableComponent {
   dataPrimitives: TablePageData;
@@ -13,7 +14,7 @@ export interface ITableComponent {
   subscriptionSearchBySymbols: Subscription;
   searchBySymbols$: Subject<any>;
   currencyControl: FormControl;
-  timePeriodValue: string;
+  timePeriodValue: TimePeriod;
 
   initFetchCoins(): void;
 

@@ -27,7 +27,7 @@ export class TablePageComponent implements OnInit, OnDestroy, ITableComponent {
   public timePeriod = TimePeriod;
   public searchBySymbols$ = new Subject<string>();
   public currencyControl: FormControl;
-  public timePeriodValue: string;
+  public timePeriodValue = TimePeriod.DAY;
   public options: IUIKitNotificationsOptions = {
     timeOut: 3000,
     pauseOnHover: true,
