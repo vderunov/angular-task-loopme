@@ -1,5 +1,6 @@
 import { CoinsALLProp } from '../../shared/interfaces';
 import { Subscription } from 'rxjs';
+import { EntryItem } from '@loopme/uikit';
 
 export interface IHistory {
   price: string;
@@ -34,14 +35,16 @@ export interface ILineChartComponent {
   editing: boolean;
   chartLineData: IChartLineItem[];
   activeLineMetrics: object[];
+  selectedCurrency: EntryItem<number, string>[];
+  selectedTimePer: EntryItem<number, string>[];
 
   fetchData(): void;
 
   createChartData(data: IData): void;
 
-  changeCurrHandler(event: Event): void;
+  onSelectCurrency(event: EntryItem<any, any>[]): void;
 
-  changeTimePeriodHandler(event: Event): void;
+  onChangeTimePeriod(event: EntryItem<any, any>[]): void;
 }
 
 

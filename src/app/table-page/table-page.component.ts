@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 
-import { GridLink, IGridActionData, IPaginationEvent, IUIKitNotificationsOptions } from '@loopme/uikit';
+import { EntryItem, GridLink, IGridActionData, IPaginationEvent, IUIKitNotificationsOptions } from '@loopme/uikit';
 import { CoinService } from '../shared/coin.service';
 import { TablePageData } from './table-page-data';
 import { ITableComponent } from './interfaces';
@@ -27,12 +27,22 @@ export class TablePageComponent implements OnInit, OnDestroy, ITableComponent {
   public timePeriod = TimePeriod;
   public searchBySymbols$ = new Subject<string>();
   public currencyControl: FormControl;
-  public timePeriodValue = TimePeriod.DAY;
   public options: IUIKitNotificationsOptions = {
     timeOut: 3000,
     pauseOnHover: true,
     lastOnBottom: false,
   };
+  public optionsSelectorCurr: EntryItem<number, string>[] = [
+    new EntryItem<number, string>(this.currency.USD, this.currency[0]),
+    new EntryItem<number, string>(this.currency.EUR, this.currency[1]),
+  ];
+  public optionsSelectorTimePer: EntryItem<number, string>[] = [
+    new EntryItem<number, string>(this.timePeriod['24h'], this.timePeriod[0]),
+    new EntryItem<number, string>(this.timePeriod['7d'], this.timePeriod[1]),
+    new EntryItem<number, string>(this.timePeriod['30d'], this.timePeriod[2]),
+  ];
+  public selectedCurrency: EntryItem<number, string>[] = [new EntryItem<number, string>(this.currency.USD, this.currency[0])];
+  public selectedTimePer: EntryItem<number, string>[] = [new EntryItem<number, string>(this.timePeriod['24h'], this.timePeriod[0])];
 
   constructor(private coinService: CoinService, private router: Router) { }
 
@@ -59,11 +69,6 @@ export class TablePageComponent implements OnInit, OnDestroy, ITableComponent {
   public initFetchCoins(): void {
     this.subscriptionFetch = this.coinService.fetchData().subscribe(result => {
       this.createCoins(result);
-    });
-
-    this.currencyControl = new FormControl(this.currency.USD);
-    this.currencyControl.valueChanges.subscribe((currency: string) => {
-      this.coinService.setRequestState({base: currency});
     });
   }
 
@@ -95,6 +100,18 @@ export class TablePageComponent implements OnInit, OnDestroy, ITableComponent {
     }
   }
 
+  public onSelectCurrency(event: EntryItem<any, any>[]): void {
+    if (event.length) {
+      this.coinService.setRequestState({base: event[0].key});
+    }
+  }
+
+  public onChangeTimePeriod(event: EntryItem<any, any>[]): void {
+    if (event.length) {
+      this.coinService.setRequestState({timePeriod: event[0].key});
+    }
+  }
+
   public onPaginationChange(event: IPaginationEvent): void {
     this.coinService.setRequestState({limit: event.itemsPerPage, offset: event.itemsPerPage * (event.currentPage - 1)});
   }
@@ -102,10 +119,6 @@ export class TablePageComponent implements OnInit, OnDestroy, ITableComponent {
   public searchBySymbols(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
     this.searchBySymbols$.next(value);
-  }
-
-  public changeTimePeriod(): void {
-    this.coinService.setRequestState({timePeriod: this.timePeriodValue});
   }
 
   public ngOnDestroy(): void {

@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 
-import { ChartTypes, Dimension } from '@loopme/uikit';
+import { ChartTypes, Dimension, EntryItem } from '@loopme/uikit';
 import { CoinService } from '../../shared/coin.service';
 import { IChartLineItem, IData, IHistory, ILineChartComponent } from './interfaces';
 import { Currency, TimePeriod } from './enums';
@@ -28,6 +28,22 @@ export class LineChartComponent implements OnInit, OnDestroy, ILineChartComponen
   public activeLineMetrics = [
     {yAxisKey: 'price', xAxisKey: 'date', name: 'Price, $', dimension: Dimension.DOLLARS, color: '#3f51b5'},
   ];
+  public optionsSelectorCurr: EntryItem<number, string>[] = [
+    new EntryItem<number, string>(this.currency.USD, this.currency[0]),
+    new EntryItem<number, string>(this.currency.EUR, this.currency[1]),
+    new EntryItem<number, string>(this.currency.ETH, this.currency[2]),
+    new EntryItem<number, string>(this.currency.BTC, this.currency[3]),
+    new EntryItem<number, string>(this.currency.JPY, this.currency[4]),
+  ];
+  public optionsSelectorTimePer: EntryItem<number, string>[] = [
+    new EntryItem<number, string>(this.timePeriod['24h'], this.timePeriod[0]),
+    new EntryItem<number, string>(this.timePeriod['7d'], this.timePeriod[1]),
+    new EntryItem<number, string>(this.timePeriod['30d'], this.timePeriod[2]),
+    new EntryItem<number, string>(this.timePeriod['1y'], this.timePeriod[3]),
+    new EntryItem<number, string>(this.timePeriod['5y'], this.timePeriod[4]),
+  ];
+  public selectedCurrency: EntryItem<number, string>[] = [new EntryItem<number, string>(this.currency.USD, this.currency[0])];
+  public selectedTimePer: EntryItem<number, string>[] = [new EntryItem<number, string>(this.timePeriod['24h'], this.timePeriod[0])];
 
   constructor(private coinService: CoinService) { }
 
@@ -52,14 +68,18 @@ export class LineChartComponent implements OnInit, OnDestroy, ILineChartComponen
     this.isChartReady = true;
   }
 
-  public changeCurrHandler(event: Event): void {
-    this.currencyParam = (event.target as HTMLInputElement).value;
-    this.fetchData();
+  public onSelectCurrency(event: EntryItem<any, any>[]): void {
+    if (event.length) {
+      this.currencyParam = event[0].key;
+      this.fetchData();
+    }
   }
 
-  public changeTimePeriodHandler(event: Event): void {
-    this.timeFrameParam = (event.target as HTMLInputElement).value;
-    this.fetchData();
+  public onChangeTimePeriod(event: EntryItem<any, any>[]): void {
+    if (event.length) {
+      this.timeFrameParam = event[0].key;
+      this.fetchData();
+    }
   }
 
   public ngOnDestroy(): void {

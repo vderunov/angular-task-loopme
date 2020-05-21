@@ -1,22 +1,16 @@
 <div *ngIf="isChartReady; else loading">
 
-  <label for="curr">Choose currency: </label>
-  <select id="curr" (change)="changeCurrHandler($event)">
-    <option value="{{currency.USD}}" selected>{{currency.USD}}</option>
-    <option value="{{currency.EUR}}">{{currency.EUR}}</option>
-    <option value="{{currency.JPY}}">{{currency.JPY}}</option>
-    <option value="{{currency.BTC}}">{{currency.BTC}}</option>
-    <option value="{{currency.ETH}}">{{currency.ETH}}</option>
-  </select>
+  <uikit-selector [label]="'Choose currency:'"
+                  [options]="optionsSelectorCurr"
+                  (onSelect)="onSelectCurrency($event)"
+                  [ngModel]="selectedCurrency">
+  </uikit-selector>
 
-  <label for="timePer">Choose time interval: </label>
-  <select id="timePer" (change)="changeTimePeriodHandler($event)">
-    <option value="{{timePeriod.DAY}}" selected>{{timePeriod.DAY}}</option>
-    <option value="{{timePeriod.WEEK}}">{{timePeriod.WEEK}}</option>
-    <option value="{{timePeriod.MONTH}}">{{timePeriod.MONTH}}</option>
-    <option value="{{timePeriod.ONE_YEAR}}">{{timePeriod.ONE_YEAR}}</option>
-    <option value="{{timePeriod.FIVE_YEARS}}">{{timePeriod.FIVE_YEARS}}</option>
-  </select>
+  <uikit-selector [label]="'Choose time interval:'"
+                  [options]="optionsSelectorTimePer"
+                  (onSelect)="onChangeTimePeriod($event)"
+                  [ngModel]="selectedTimePer">
+  </uikit-selector>
 
   <uikit-chart-nav
     [selected]="activeLineMetrics"

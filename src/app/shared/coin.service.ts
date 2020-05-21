@@ -19,7 +19,9 @@ export class CoinService {
 
   private params = new HttpParams();
   private subject$ = new Subject<CoinsALLProp[]>();
-  private requestState: RequestState = new RequestState(Currency.USD, TimePeriod.DAY, 0, 15, 'desc', '');
+  private currency = Currency;
+  private timePeriod = TimePeriod;
+  private requestState: RequestState = new RequestState(this.currency[0], this.timePeriod[0], 0, 15, 'desc', '');
 
   constructor(private http: HttpClient) { }
 

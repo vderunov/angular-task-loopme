@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 import { InfoPageComponent } from './info-page.component';
 import { AdditionalCoinInfoComponent } from './additional-coin-info/additional-coin-info.component';
@@ -19,7 +20,8 @@ import { SharedModule } from '../shared/shared.module';
     SharedModule,
     RouterModule.forChild([
       {path: '', component: InfoPageComponent}
-    ])
+    ]),
+    FormsModule
   ],
   exports: [RouterModule]
 })
