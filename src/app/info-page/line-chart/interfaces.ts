@@ -1,5 +1,4 @@
 import { CoinsALLProp } from '../../shared/interfaces';
-import { Subscription } from 'rxjs';
 import { EntryItem } from '@loopme/uikit';
 
 export interface IHistory {
@@ -20,13 +19,12 @@ export interface IChartLineItem {
 export interface IData {
   status: string;
   data: {
-    change: number,
-    history: IHistoryObj[]
+    change: number;
+    history: IHistoryObj[];
   };
 }
 
 export interface ILineChartComponent {
-  subscriptionFetch: Subscription;
   coin: CoinsALLProp;
   history: IHistory[];
   isChartReady: boolean;
@@ -42,9 +40,7 @@ export interface ILineChartComponent {
 
   createChartData(data: IData): void;
 
-  onSelectCurrency(event: EntryItem<any, any>[]): void;
+  onSelectCurrency(event: EntryItem<string, string>[]): void;
 
-  onChangeTimePeriod(event: EntryItem<any, any>[]): void;
+  onChangeTimePeriod(event: EntryItem<string, string>[]): void;
 }
-
-

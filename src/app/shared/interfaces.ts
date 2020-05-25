@@ -5,6 +5,7 @@ export interface IState {
   timePeriod: string;
   offset: number;
   limit: number;
+  order: string;
   symbols?: string;
 }
 
@@ -54,8 +55,16 @@ export interface Coin {
 export interface DefResponse {
   status: string;
   data: {
-    stats: object,
-    base: object,
-    coins: []
+    stats: object;
+    base: object;
+    coins: [];
+  };
+}
+
+export interface IdCoinResp {
+  status: string;
+  data: {
+    base: object;
+    coin: CoinsALLProp;
   };
 }

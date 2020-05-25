@@ -9,7 +9,7 @@ export interface IDataPrimitives {
   description: string;
   id: number;
   name: {
-    name: string
+    name: string;
   };
   numberOfExchanges: number;
   numberOfMarkets: number;

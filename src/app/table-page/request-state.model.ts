@@ -5,6 +5,7 @@ export class RequestState {
     public offset: number,
     public limit: number,
     public order: string,
-    public symbols: string) {
+    public symbols?: string,
+  ) {
   }
 }

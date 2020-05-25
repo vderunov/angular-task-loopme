@@ -6,29 +6,31 @@ import { EntryItem, IGridActionData, IPaginationEvent } from '@loopme/uikit';
 import { Subject, Subscription } from 'rxjs';
 
 export interface ITableComponent {
+  isCoinsNotFound: boolean;
+  isGridLoading: boolean;
+  currentPage: number;
+  totalItems: number;
+  itemsPerPage: number;
   dataPrimitives: TablePageData;
   settingsPrimitives: TablePageData;
-  subscriptionGetCoins: Subscription;
-  subscriptionFetch: Subscription;
-  subscriptionSearchBySymbols: Subscription;
-  searchBySymbols$: Subject<any>;
+  subGetCoins: Subscription;
+  subSearchBySymbols: Subscription;
+  searchBySymbols$: Subject<string>;
   currencyControl: FormControl;
   optionsSelectorCurr: EntryItem<number, string>[];
   optionsSelectorTimePer: EntryItem<number, string>[];
   selectedCurrency: EntryItem<number, string>[];
   selectedTimePer: EntryItem<number, string>[];
 
-  initFetchCoins(): void;
-
   createCoins(coins: CoinsALLProp[]): void;
 
-  getActionGrid(event: IGridActionData): void;
+  onGetActionGrid(event: IGridActionData): void;
 
   onPaginationChange(event: IPaginationEvent): void;
 
-  searchBySymbols(event: Event): void;
+  onSearchBySymbols(event: Event): void;
 
-  onSelectCurrency(event: EntryItem<any, any>[]): void;
+  onSelectCurrency(event: EntryItem<string, string>[]): void;
 
-  onChangeTimePeriod(event: EntryItem<any, any>[]): void;
+  onChangeTimePeriod(event: EntryItem<string, string>[]): void;
 }

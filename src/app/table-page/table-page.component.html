@@ -10,24 +10,30 @@
                 [ngModel]="selectedTimePer">
 </uikit-selector>
 
-<uikit-notifications [options]="options" class="notification"></uikit-notifications>
-
 <uikit-input
   placeholder="Search..."
-  (input)="searchBySymbols($event)">
+  (input)="onSearchBySymbols($event)">
 </uikit-input>
 
 <uikit-pagination
-  [currentPage]="1"
-  [totalItems]="100"
-  [itemsPerPage]="15"
+  [currentPage]="currentPage"
+  [totalItems]="totalItems"
+  [itemsPerPage]="itemsPerPage"
   (onPageChangeEvent)="onPaginationChange($event)">
 </uikit-pagination>
 
 <app-export-csv [dataPrimitives]="dataPrimitives"></app-export-csv>
 
-<uikit-grid
-  [gridDataRows]="dataPrimitives"
-  [settings]="settingsPrimitives"
-  (gridAction)="getActionGrid($event)">
-</uikit-grid>
+<p *ngIf="isGridLoading; else table" class="text-align-center"><b>Grid loading...</b></p>
+
+<ng-template #table>
+  <uikit-grid
+    [gridDataRows]="dataPrimitives"
+    [settings]="settingsPrimitives"
+    (gridAction)="onGetActionGrid($event)">
+  </uikit-grid>
+</ng-template>
+
+<p *ngIf="isCoinsNotFound" class="text-align-center"><b>No coins found</b></p>
+
+

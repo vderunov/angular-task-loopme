@@ -2,36 +2,41 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 
-import { EntryItem, GridLink, IGridActionData, IPaginationEvent, IUIKitNotificationsOptions } from '@loopme/uikit';
+import {
+  EntryItem,
+  GridLink,
+  IGridActionData,
+  IPaginationEvent,
+} from '@loopme/uikit';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { CoinService } from '../shared/coin.service';
 import { TablePageData } from './table-page-data';
 import { ITableComponent } from './interfaces';
 import { Coin, CoinsALLProp } from '../shared/interfaces';
 import { Currency, TimePeriod } from './enums';
-import { Subject, Subscription } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { RequestState } from './request-state.model';
 
 
 @Component({
   selector: 'app-table',
   templateUrl: './table-page.component.html',
-  styleUrls: ['./table-page.component.scss']
+  styleUrls: ['./table-page.component.scss'],
 })
 export class TablePageComponent implements OnInit, OnDestroy, ITableComponent {
+  public isCoinsNotFound = false;
+  public isGridLoading = false;
+  public currentPage = 1;
+  public totalItems = 100;
+  public itemsPerPage = 15;
   public dataPrimitives = TablePageData.dataPrimitives;
   public settingsPrimitives = TablePageData.settingsPrimitives;
-  public subscriptionGetCoins: Subscription;
-  public subscriptionFetch: Subscription;
-  public subscriptionSearchBySymbols: Subscription;
+  public subGetCoins: Subscription;
+  public subSearchBySymbols: Subscription;
   public currency = Currency;
   public timePeriod = TimePeriod;
   public searchBySymbols$ = new Subject<string>();
   public currencyControl: FormControl;
-  public options: IUIKitNotificationsOptions = {
-    timeOut: 3000,
-    pauseOnHover: true,
-    lastOnBottom: false,
-  };
   public optionsSelectorCurr: EntryItem<number, string>[] = [
     new EntryItem<number, string>(this.currency.USD, this.currency[0]),
     new EntryItem<number, string>(this.currency.EUR, this.currency[1]),
@@ -44,86 +49,96 @@ export class TablePageComponent implements OnInit, OnDestroy, ITableComponent {
   public selectedCurrency: EntryItem<number, string>[] = [new EntryItem<number, string>(this.currency.USD, this.currency[0])];
   public selectedTimePer: EntryItem<number, string>[] = [new EntryItem<number, string>(this.timePeriod['24h'], this.timePeriod[0])];
 
-  constructor(private coinService: CoinService, private router: Router) { }
+  constructor(
+    private coinService: CoinService,
+    private router: Router,
+  ) { }
 
   public ngOnInit(): void {
-    if (this.coinService.arrayCoinsLoaded) {
-      this.createCoins(this.coinService.arrayCoinsLoaded);
-    }
+    this.isGridLoading = true;
+    const initRequestState = new RequestState(
+      this.currency[0],
+      this.timePeriod[0],
+      0,
+      15,
+      'desc',
+    );
 
-    this.subscriptionGetCoins = this.coinService.getCoinsBySubscription().subscribe(result => {
-      if (result[0]) {
-        this.createCoins(result);
-      }
-    });
+    this.coinService.setRequestState(initRequestState);
 
-    this.subscriptionSearchBySymbols = this.searchBySymbols$.pipe(
-      debounceTime(1000),
-      distinctUntilChanged()
-    ).subscribe(value => {
-      value ? this.coinService.setRequestState({symbols: value}) : this.coinService.setRequestState({symbols: ''});
-    });
-    this.initFetchCoins();
-  }
+    this.subGetCoins = this.coinService.getCoinsBySubscription()
+      .subscribe((result) => {
+        if (result && result[0]) {
+          this.isCoinsNotFound = false;
+          this.createCoins(result);
+        } else {
+          this.dataPrimitives = [];
+          this.isGridLoading = false;
+          this.isCoinsNotFound = true;
+        }
+      });
 
-  public initFetchCoins(): void {
-    this.subscriptionFetch = this.coinService.fetchData().subscribe(result => {
-      this.createCoins(result);
-    });
+    this.subSearchBySymbols = this.searchBySymbols$
+      .pipe(
+        debounceTime(1000),
+        distinctUntilChanged(),
+      ).subscribe((value) => {
+        this.coinService.setRequestState({ symbols: value });
+      });
   }
 
   public createCoins(coins: CoinsALLProp[]): void {
-    this.dataPrimitives = coins.map((coin: CoinsALLProp): Coin => {
-      return {
-        id: coin.id,
-        name: new GridLink(coin.name, 'google.com'),
-        slug: coin.slug,
-        symbol: coin.symbol,
-        price: +coin.price,
-        description: coin.description,
-        numberOfMarkets: coin.numberOfMarkets,
-        numberOfExchanges: coin.numberOfExchanges,
-        change: coin.change
-      };
-    });
+    this.isGridLoading = false;
+    this.dataPrimitives = coins.map((coin: CoinsALLProp): Coin => ({
+      id: coin.id,
+      name: new GridLink(coin.name, 'google.com'),
+      slug: coin.slug,
+      symbol: coin.symbol,
+      price: +coin.price,
+      description: coin.description,
+      numberOfMarkets: coin.numberOfMarkets,
+      numberOfExchanges: coin.numberOfExchanges,
+      change: coin.change,
+    }));
   }
 
-  public getActionGrid(event: IGridActionData): void {
+  public onGetActionGrid(event: IGridActionData): void {
     if (event.row) {
       this.router.navigate(['/info', event.row.id]);
     }
 
     if (event.key === 'price' && event.action !== 'none') {
-      this.coinService.setRequestState({order: event.action});
-    } else if (event.key === 'price') {
-      this.coinService.setRequestState({order: ''});
+      this.coinService.setRequestState({ order: event.action });
     }
   }
 
-  public onSelectCurrency(event: EntryItem<any, any>[]): void {
+  public onSelectCurrency(event: EntryItem<string, string>[]): void {
     if (event.length) {
-      this.coinService.setRequestState({base: event[0].key});
+      this.coinService.setRequestState({ base: event[0].key });
     }
   }
 
-  public onChangeTimePeriod(event: EntryItem<any, any>[]): void {
+  public onChangeTimePeriod(event: EntryItem<string, string>[]): void {
     if (event.length) {
-      this.coinService.setRequestState({timePeriod: event[0].key});
+      this.coinService.setRequestState({ timePeriod: event[0].key });
     }
   }
 
   public onPaginationChange(event: IPaginationEvent): void {
-    this.coinService.setRequestState({limit: event.itemsPerPage, offset: event.itemsPerPage * (event.currentPage - 1)});
+    this.currentPage = event.currentPage;
+    const pageOffset = (event.currentPage - 1) * event.itemsPerPage;
+    this.coinService.setRequestState({ limit: event.itemsPerPage, offset: pageOffset });
   }
 
-  public searchBySymbols(event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
+  public onSearchBySymbols(event: Event): void {
+    this.isCoinsNotFound = false;
+    this.isGridLoading = true;
+    const { value } = event.target as HTMLInputElement;
     this.searchBySymbols$.next(value);
   }
 
   public ngOnDestroy(): void {
-    this.subscriptionGetCoins.unsubscribe();
-    this.subscriptionFetch.unsubscribe();
-    this.subscriptionSearchBySymbols.unsubscribe();
+    this.subGetCoins.unsubscribe();
+    this.subSearchBySymbols.unsubscribe();
   }
 }

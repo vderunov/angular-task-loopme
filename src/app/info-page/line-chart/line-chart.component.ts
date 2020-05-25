@@ -1,21 +1,20 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 import { ChartTypes, Dimension, EntryItem } from '@loopme/uikit';
 import { CoinService } from '../../shared/coin.service';
 import { IChartLineItem, IData, IHistory, ILineChartComponent } from './interfaces';
 import { Currency, TimePeriod } from './enums';
 import { CoinsALLProp } from '../../shared/interfaces';
-import { Subscription } from 'rxjs';
+
 
 @Component({
   selector: 'app-line-chart',
   templateUrl: './line-chart.component.html',
-  styleUrls: ['./line-chart.component.scss']
+  styleUrls: ['./line-chart.component.scss'],
 })
-export class LineChartComponent implements OnInit, OnDestroy, ILineChartComponent {
+export class LineChartComponent implements OnInit, ILineChartComponent {
   @Input() coin: CoinsALLProp;
 
-  public subscriptionFetch: Subscription;
   public history: IHistory[] = [];
   public isChartReady = false;
   public currency = Currency;
@@ -26,7 +25,9 @@ export class LineChartComponent implements OnInit, OnDestroy, ILineChartComponen
   public editing: boolean;
   public chartLineData: IChartLineItem[];
   public activeLineMetrics = [
-    {yAxisKey: 'price', xAxisKey: 'date', name: 'Price, $', dimension: Dimension.DOLLARS, color: '#3f51b5'},
+    {
+      yAxisKey: 'price', xAxisKey: 'date', name: 'Price, $', dimension: Dimension.DOLLARS, color: '#3f51b5',
+    },
   ];
   public optionsSelectorCurr: EntryItem<number, string>[] = [
     new EntryItem<number, string>(this.currency.USD, this.currency[0]),
@@ -52,7 +53,7 @@ export class LineChartComponent implements OnInit, OnDestroy, ILineChartComponen
   }
 
   public fetchData(): void {
-    this.subscriptionFetch = this.coinService.fetchCoinHistory(this.coin.id, this.timeFrameParam, this.currencyParam)
+    this.coinService.fetchCoinHistory(this.coin.id, this.timeFrameParam, this.currencyParam)
       .subscribe((result: IData) => {
         this.createChartData(result);
       });
@@ -61,28 +62,25 @@ export class LineChartComponent implements OnInit, OnDestroy, ILineChartComponen
   public createChartData(data: IData): void {
     const everyNthElementInArray = 20;
     let i = 0;
-    this.chartLineData = data.data.history.filter(() => (++i) % everyNthElementInArray === 0).map(item => ({
+
+    this.chartLineData = data.data.history.filter(() => (++i) % everyNthElementInArray === 0).map((item) => ({
       date: item.timestamp.toString(),
-      price: item.price
+      price: item.price,
     }));
     this.isChartReady = true;
   }
 
-  public onSelectCurrency(event: EntryItem<any, any>[]): void {
+  public onSelectCurrency(event: EntryItem<string, string>[]): void {
     if (event.length) {
       this.currencyParam = event[0].key;
       this.fetchData();
     }
   }
 
-  public onChangeTimePeriod(event: EntryItem<any, any>[]): void {
+  public onChangeTimePeriod(event: EntryItem<string, string>[]): void {
     if (event.length) {
       this.timeFrameParam = event[0].key;
       this.fetchData();
     }
-  }
-
-  public ngOnDestroy(): void {
-    this.subscriptionFetch.unsubscribe();
   }
 }

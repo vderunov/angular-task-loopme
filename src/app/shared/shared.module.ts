@@ -5,11 +5,11 @@ import { NgUIKitModule } from '@loopme/uikit';
 
 @NgModule({
   imports: [
-    NgUIKitModule
+    NgUIKitModule,
   ],
   exports: [
-    NgUIKitModule
-  ]
+    NgUIKitModule,
+  ],
 })
 export class SharedModule {
 

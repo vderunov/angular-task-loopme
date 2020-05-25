@@ -11,20 +11,18 @@ import { NotificationsService } from '@loopme/uikit';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     SharedModule,
-    TablePageModule
+    TablePageModule,
   ],
   providers: [NotificationsService],
   exports: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {
-  constructor() {
-  }
 }

@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 
+import { IUIKitNotificationsOptions } from '@loopme/uikit';
+
 
 @Component({
   selector: 'app-root',
@@ -8,4 +10,9 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   public title = 'angular-loopMe';
+  public options: IUIKitNotificationsOptions = {
+    timeOut: 5000,
+    pauseOnHover: true,
+    lastOnBottom: false,
+  };
 }
