@@ -12,7 +12,7 @@ const routes: Routes = [
     loadChildren: () => import('./info-page/info-page.module').then((m) => m.InfoPageModule),
     canLoad: [IdGuard],
     canActivate: [IdGuard],
-    canDeactivate: [IdGuard]
+    canDeactivate: [IdGuard],
   },
   { path: '**', redirectTo: '/' },
 ];

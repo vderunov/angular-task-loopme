@@ -73,10 +73,12 @@ export class LineChartComponent implements OnInit, ILineChartComponent {
     const everyNthElementInArray = 20;
     let i = 0;
 
-    this.chartLineData = data.data.history.filter(() => (++i) % everyNthElementInArray === 0).map((item) => ({
-      date: item.timestamp.toString(),
-      price: item.price,
-    }));
+    this.chartLineData = data.data.history
+      .filter(() => (++i) % everyNthElementInArray === 0)
+      .map((item) => ({
+        date: item.timestamp.toString(),
+        price: item.price,
+      }));
     this.isChartReady = true;
   }
 
