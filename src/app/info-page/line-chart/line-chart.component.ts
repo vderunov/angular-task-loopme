@@ -17,8 +17,6 @@ export class LineChartComponent implements OnInit, ILineChartComponent {
 
   public history: IHistory[] = [];
   public isChartReady = false;
-  public currency = Currency;
-  public timePeriod = TimePeriod;
   public currencyParam: string;
   public timeFrameParam: string;
   public chartTypes = ChartTypes;
@@ -29,22 +27,34 @@ export class LineChartComponent implements OnInit, ILineChartComponent {
       yAxisKey: 'price', xAxisKey: 'date', name: 'Price, $', dimension: Dimension.DOLLARS, color: '#3f51b5',
     },
   ];
-  public optionsSelectorCurr: EntryItem<number, string>[] = [
-    new EntryItem<number, string>(this.currency.USD, this.currency[0]),
-    new EntryItem<number, string>(this.currency.EUR, this.currency[1]),
-    new EntryItem<number, string>(this.currency.ETH, this.currency[2]),
-    new EntryItem<number, string>(this.currency.BTC, this.currency[3]),
-    new EntryItem<number, string>(this.currency.JPY, this.currency[4]),
+  public mapCurrency = new Map()
+    .set(Currency.USD, 'USD')
+    .set(Currency.EUR, 'EUR')
+    .set(Currency.JPY, 'JPY')
+    .set(Currency.BTC, 'BTC')
+    .set(Currency.ETH, 'ETH');
+  public mapTimePeriod = new Map()
+    .set(TimePeriod.DAY, '24h')
+    .set(TimePeriod.WEEK, '7d')
+    .set(TimePeriod.MONTH, '30d')
+    .set(TimePeriod.YEAR, '1y')
+    .set(TimePeriod.FIVE_YEARS, '5y');
+  public optionsSelectorCurr = [
+    new EntryItem<number, string>(1, this.mapCurrency.get(0)),
+    new EntryItem<number, string>(2, this.mapCurrency.get(1)),
+    new EntryItem<number, string>(3, this.mapCurrency.get(2)),
+    new EntryItem<number, string>(4, this.mapCurrency.get(3)),
+    new EntryItem<number, string>(5, this.mapCurrency.get(4)),
   ];
-  public optionsSelectorTimePer: EntryItem<number, string>[] = [
-    new EntryItem<number, string>(this.timePeriod['24h'], this.timePeriod[0]),
-    new EntryItem<number, string>(this.timePeriod['7d'], this.timePeriod[1]),
-    new EntryItem<number, string>(this.timePeriod['30d'], this.timePeriod[2]),
-    new EntryItem<number, string>(this.timePeriod['1y'], this.timePeriod[3]),
-    new EntryItem<number, string>(this.timePeriod['5y'], this.timePeriod[4]),
+  public optionsSelectorTimePer = [
+    new EntryItem<number, string>(1, this.mapTimePeriod.get(0)),
+    new EntryItem<number, string>(2, this.mapTimePeriod.get(1)),
+    new EntryItem<number, string>(3, this.mapTimePeriod.get(2)),
+    new EntryItem<number, string>(4, this.mapTimePeriod.get(3)),
+    new EntryItem<number, string>(5, this.mapTimePeriod.get(4)),
   ];
-  public selectedCurrency: EntryItem<number, string>[] = [new EntryItem<number, string>(this.currency.USD, this.currency[0])];
-  public selectedTimePer: EntryItem<number, string>[] = [new EntryItem<number, string>(this.timePeriod['24h'], this.timePeriod[0])];
+  public selectedCurrency = [new EntryItem<number, string>(1, this.mapCurrency.get(0))];
+  public selectedTimePer = [new EntryItem<number, string>(1, this.mapTimePeriod.get(0))];
 
   constructor(private coinService: CoinService) { }
 

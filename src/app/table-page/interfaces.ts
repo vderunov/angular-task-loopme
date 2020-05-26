@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { TablePageData } from './table-page-data';
 import { CoinsALLProp } from '../shared/interfaces';
 import { EntryItem, IGridActionData, IPaginationEvent } from '@loopme/uikit';
-import { Subject, Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 
 export interface ITableComponent {
   isCoinsNotFound: boolean;
@@ -13,8 +13,6 @@ export interface ITableComponent {
   itemsPerPage: number;
   dataPrimitives: TablePageData;
   settingsPrimitives: TablePageData;
-  subGetCoins: Subscription;
-  subSearchBySymbols: Subscription;
   searchBySymbols$: Subject<string>;
   currencyControl: FormControl;
   optionsSelectorCurr: EntryItem<number, string>[];

@@ -1,10 +1,10 @@
 export enum TimePeriod {
-  '24h',
-  '7d',
-  '30d',
+  DAY,
+  WEEK,
+  MONTH
 }
 
 export enum Currency {
-  'USD',
-  'EUR'
+  USD,
+  EUR
 }

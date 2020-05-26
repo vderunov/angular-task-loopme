@@ -7,9 +7,10 @@ import {
   GridLink,
   IGridActionData,
   IPaginationEvent,
+  takeUntilDestroy,
 } from '@loopme/uikit';
-import { Subject, Subscription } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 import { CoinService } from '../shared/coin.service';
 import { TablePageData } from './table-page-data';
 import { ITableComponent } from './interfaces';
@@ -31,23 +32,26 @@ export class TablePageComponent implements OnInit, OnDestroy, ITableComponent {
   public itemsPerPage = 15;
   public dataPrimitives = TablePageData.dataPrimitives;
   public settingsPrimitives = TablePageData.settingsPrimitives;
-  public subGetCoins: Subscription;
-  public subSearchBySymbols: Subscription;
-  public currency = Currency;
-  public timePeriod = TimePeriod;
   public searchBySymbols$ = new Subject<string>();
   public currencyControl: FormControl;
-  public optionsSelectorCurr: EntryItem<number, string>[] = [
-    new EntryItem<number, string>(this.currency.USD, this.currency[0]),
-    new EntryItem<number, string>(this.currency.EUR, this.currency[1]),
+  public mapCurrency = new Map()
+    .set(Currency.USD, 'USD')
+    .set(Currency.EUR, 'EUR');
+  public mapTimePeriod = new Map()
+    .set(TimePeriod.DAY, '24h')
+    .set(TimePeriod.WEEK, '7d')
+    .set(TimePeriod.MONTH, '30d');
+  public optionsSelectorCurr = [
+    new EntryItem<number, string>(1, this.mapCurrency.get(0)),
+    new EntryItem<number, string>(2, this.mapCurrency.get(1)),
   ];
-  public optionsSelectorTimePer: EntryItem<number, string>[] = [
-    new EntryItem<number, string>(this.timePeriod['24h'], this.timePeriod[0]),
-    new EntryItem<number, string>(this.timePeriod['7d'], this.timePeriod[1]),
-    new EntryItem<number, string>(this.timePeriod['30d'], this.timePeriod[2]),
+  public optionsSelectorTimePer = [
+    new EntryItem<number, string>(1, this.mapTimePeriod.get(0)),
+    new EntryItem<number, string>(2, this.mapTimePeriod.get(1)),
+    new EntryItem<number, string>(3, this.mapTimePeriod.get(2)),
   ];
-  public selectedCurrency: EntryItem<number, string>[] = [new EntryItem<number, string>(this.currency.USD, this.currency[0])];
-  public selectedTimePer: EntryItem<number, string>[] = [new EntryItem<number, string>(this.timePeriod['24h'], this.timePeriod[0])];
+  public selectedCurrency = [new EntryItem<number, string>(1, this.mapCurrency.get(0))];
+  public selectedTimePer = [new EntryItem<number, string>(1, this.mapTimePeriod.get(0))];
 
   constructor(
     private coinService: CoinService,
@@ -57,8 +61,8 @@ export class TablePageComponent implements OnInit, OnDestroy, ITableComponent {
   public ngOnInit(): void {
     this.isGridLoading = true;
     const initRequestState = new RequestState(
-      this.currency[0],
-      this.timePeriod[0],
+      this.mapCurrency.get(0),
+      this.mapTimePeriod.get(0),
       0,
       15,
       'desc',
@@ -66,7 +70,10 @@ export class TablePageComponent implements OnInit, OnDestroy, ITableComponent {
 
     this.coinService.setRequestState(initRequestState);
 
-    this.subGetCoins = this.coinService.getCoinsBySubscription()
+    this.coinService.getCoinsBySubscription()
+      .pipe(
+        takeUntilDestroy(this),
+      )
       .subscribe((result) => {
         if (result && result[0]) {
           this.isCoinsNotFound = false;
@@ -78,13 +85,13 @@ export class TablePageComponent implements OnInit, OnDestroy, ITableComponent {
         }
       });
 
-    this.subSearchBySymbols = this.searchBySymbols$
+    this.searchBySymbols$
       .pipe(
         debounceTime(1000),
         distinctUntilChanged(),
-      ).subscribe((value) => {
-        this.coinService.setRequestState({ symbols: value });
-      });
+        tap((symbols) => this.coinService.setRequestState({ symbols })),
+        takeUntilDestroy(this),
+      ).subscribe();
   }
 
   public createCoins(coins: CoinsALLProp[]): void {
@@ -137,8 +144,5 @@ export class TablePageComponent implements OnInit, OnDestroy, ITableComponent {
     this.searchBySymbols$.next(value);
   }
 
-  public ngOnDestroy(): void {
-    this.subGetCoins.unsubscribe();
-    this.subSearchBySymbols.unsubscribe();
-  }
+  public ngOnDestroy(): void { }
 }

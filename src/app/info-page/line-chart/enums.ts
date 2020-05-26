@@ -1,15 +1,15 @@
 export enum TimePeriod {
-  '24h',
-  '7d',
-  '30d',
-  '1y',
-  '5y',
+  DAY,
+  WEEK,
+  MONTH,
+  YEAR,
+  FIVE_YEARS,
 }
 
 export enum Currency {
-  'USD',
-  'EUR',
-  'JPY',
-  'BTC',
-  'ETH',
+  USD,
+  EUR,
+  JPY,
+  BTC,
+  ETH,
 }
