@@ -20,8 +20,6 @@ export interface ITableComponent {
   selectedCurrency: EntryItem<number, string>[];
   selectedTimePer: EntryItem<number, string>[];
 
-  createCoins(coins: CoinsALLProp[]): void;
-
   onGetActionGrid(event: IGridActionData): void;
 
   onPaginationChange(event: IPaginationEvent): void;
