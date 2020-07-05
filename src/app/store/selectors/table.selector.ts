@@ -6,5 +6,5 @@ const selectCoins = (state: IAppState) => state.table;
 
 export const selectCoinsList = createSelector(
   selectCoins,
-  (state: ITableState) => state.coins
+  (state: ITableState) => state.coins,
 );

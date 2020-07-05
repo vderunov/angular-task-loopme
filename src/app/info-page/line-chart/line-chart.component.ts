@@ -1,10 +1,14 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 
 import { ChartTypes, Dimension, EntryItem } from '@loopme/uikit';
-import { CoinService } from '../../shared/coin.service';
 import { IChartLineItem, IData, IHistory, ILineChartComponent } from './interfaces';
 import { Currency, TimePeriod } from './enums';
 import { CoinsALLProp } from '../../shared/interfaces';
+import { select, Store } from '@ngrx/store';
+import { IAppState } from '../../store/state/app.state';
+import { GetCoinHistory } from '../../store/actions/additional-info.actions';
+import { selectCoinHistory } from '../../store/selectors/additional-info.selector';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -12,16 +16,17 @@ import { CoinsALLProp } from '../../shared/interfaces';
   templateUrl: './line-chart.component.html',
   styleUrls: ['./line-chart.component.scss'],
 })
-export class LineChartComponent implements OnInit, ILineChartComponent {
+export class LineChartComponent implements OnInit, OnDestroy, ILineChartComponent {
   @Input() coin: CoinsALLProp;
 
+  public chartLineData: IChartLineItem[];
   public history: IHistory[] = [];
   public isChartReady = false;
   public currencyParam: string;
   public timeFrameParam: string;
   public chartTypes = ChartTypes;
   public editing: boolean;
-  public chartLineData: IChartLineItem[];
+  public coinHistoryData$ = this.store.pipe(select(selectCoinHistory));
   public activeLineMetrics = [
     {
       yAxisKey: 'price', xAxisKey: 'date', name: 'Price, $', dimension: Dimension.DOLLARS, color: '#3f51b5',
@@ -55,18 +60,17 @@ export class LineChartComponent implements OnInit, ILineChartComponent {
   ];
   public selectedCurrency = [new EntryItem<number, string>(1, this.mapCurrency.get(0))];
   public selectedTimePer = [new EntryItem<number, string>(1, this.mapTimePeriod.get(0))];
+  public subscription: Subscription;
 
-  constructor(private coinService: CoinService) { }
+  constructor(private store: Store<IAppState>) { }
 
   public ngOnInit(): void {
-    this.fetchData();
-  }
-
-  public fetchData(): void {
-    this.coinService.fetchCoinHistory(this.coin.id, this.timeFrameParam, this.currencyParam)
-      .subscribe((result: IData) => {
+    this.store.dispatch(new GetCoinHistory({ coinId: this.coin.id, timeFrame: this.timeFrameParam, currency: this.currencyParam }));
+    this.subscription = this.coinHistoryData$.subscribe((result) => {
+      if (result) {
         this.createChartData(result);
-      });
+      }
+    });
   }
 
   public createChartData(data: IData): void {
@@ -84,15 +88,17 @@ export class LineChartComponent implements OnInit, ILineChartComponent {
 
   public onSelectCurrency(event: EntryItem<string, string>[]): void {
     if (event.length) {
-      this.currencyParam = event[0].key;
-      this.fetchData();
+      this.store.dispatch(new GetCoinHistory({ coinId: this.coin.id, timeFrame: this.timeFrameParam, currency: event[0].key }));
     }
   }
 
   public onChangeTimePeriod(event: EntryItem<string, string>[]): void {
     if (event.length) {
-      this.timeFrameParam = event[0].key;
-      this.fetchData();
+      this.store.dispatch(new GetCoinHistory({ coinId: this.coin.id, timeFrame: event[0].key, currency: this.currencyParam }));
     }
+  }
+
+  public ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 }

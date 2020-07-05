@@ -14,7 +14,7 @@ export enum ETableActions {
   GetCoinsPagination = '[Table] Get Coins Pagination',
   GetCoinsPaginationSuccess = '[Table] Get Coins Pagination Success',
   GetSearchCoinBySymbols = '[Table] Get Coin By Symbols',
-  GetSearchCoinBySymbolsSuccess = '[Table] Get Coin By Symbols Success'
+  GetSearchCoinBySymbolsSuccess = '[Table] Get Coin By Symbols Success',
 }
 
 export class GetCoins implements Action {
@@ -100,4 +100,3 @@ export type TableActions =
   GetCoinsPaginationSuccess |
   GetSearchCoinBySymbols |
   GetSearchCoinBySymbolsSuccess;
-

@@ -12,9 +12,11 @@ import {
   GetCoinsPaginationSuccess,
   GetCoinsSelectByCurrency,
   GetCoinsSelectByCurrencySuccess,
-  GetCoinsSuccess, GetSearchCoinBySymbols, GetSearchCoinBySymbolsSuccess
+  GetCoinsSuccess, GetSearchCoinBySymbols, GetSearchCoinBySymbolsSuccess,
 } from '../actions/table.actions';
-import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import {
+  catchError, debounceTime, distinctUntilChanged, switchMap,
+} from 'rxjs/operators';
 import { of, throwError } from 'rxjs';
 import { TableService } from '../../services/table.service';
 import { DefResponse } from '../../shared/interfaces';
@@ -34,7 +36,7 @@ export class TableEffects {
     catchError((err) => {
       console.log(err);
       return throwError(err);
-    })
+    }),
   );
 
   @Effect()
@@ -48,7 +50,7 @@ export class TableEffects {
     catchError((err) => {
       console.log(err);
       return throwError(err);
-    })
+    }),
   );
 
   @Effect()
@@ -62,7 +64,7 @@ export class TableEffects {
     catchError((err) => {
       console.log(err);
       return throwError(err);
-    })
+    }),
   );
 
   @Effect()
@@ -76,7 +78,7 @@ export class TableEffects {
     catchError((err) => {
       console.log(err);
       return throwError(err);
-    })
+    }),
   );
 
   @Effect()
@@ -90,7 +92,7 @@ export class TableEffects {
     catchError((err) => {
       console.log(err);
       return throwError(err);
-    })
+    }),
   );
 
   @Effect()
@@ -106,11 +108,11 @@ export class TableEffects {
     catchError((err) => {
       console.log(err);
       return throwError(err);
-    })
+    }),
   );
 
   constructor(
     private tableService: TableService,
-    private actions$: Actions
+    private actions$: Actions,
   ) {}
 }

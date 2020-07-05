@@ -20,6 +20,11 @@ export class TableService {
 
   constructor(private http: HttpClient) {}
 
+  public getCoins(state = {}): Observable<DefResponse> {
+    this.setRequestState(state);
+    return this.http.get<DefResponse>(`${environment.baseUrl}/coins?&${this.params}`);
+  }
+
   private setParams(state: IState): void {
     this.params = new HttpParams({
       fromObject: {
@@ -42,10 +47,5 @@ export class TableService {
       ...newSettings,
     };
     this.setParams(this.requestState);
-  }
-
-  public getCoins(state = {}): Observable<DefResponse> {
-    this.setRequestState(state);
-    return this.http.get<DefResponse>(`${environment.baseUrl}/coins?&${this.params}`);
   }
 }

@@ -13,19 +13,18 @@ import { SharedModule } from '../shared/shared.module';
   declarations: [
     InfoPageComponent,
     AdditionalCoinInfoComponent,
-    LineChartComponent
+    LineChartComponent,
   ],
   imports: [
     CommonModule,
     SharedModule,
     RouterModule.forChild([
-      {path: '', component: InfoPageComponent}
+      { path: '', component: InfoPageComponent },
     ]),
-    FormsModule
+    FormsModule,
   ],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class InfoPageModule {
 
 }
-

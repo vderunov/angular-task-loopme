@@ -28,3 +28,7 @@ export interface ICoinALLProp {
   allTimeHigh: object;
   penalty: boolean;
 }
+
+export interface Error {
+  error: null | string;
+}

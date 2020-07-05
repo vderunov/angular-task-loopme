@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
-import { CoinService } from '../shared/coin.service';
-import { CoinsALLProp } from '../shared/interfaces';
+import { select, Store } from '@ngrx/store';
+import { IAppState } from '../store/state/app.state';
+import { selectCoinById } from '../store/selectors/additional-info.selector';
 
 
 @Component({
@@ -9,12 +10,8 @@ import { CoinsALLProp } from '../shared/interfaces';
   templateUrl: './info-page.component.html',
   styleUrls: ['./info-page.component.scss'],
 })
-export class InfoPageComponent implements OnInit {
-  public coin: CoinsALLProp;
+export class InfoPageComponent {
+  public coin$ = this.store.pipe(select(selectCoinById));
 
-  constructor(private coinService: CoinService) { }
-
-  public ngOnInit(): void {
-    this.coin = this.coinService.coinById;
-  }
+  constructor(private store: Store<IAppState>) { }
 }

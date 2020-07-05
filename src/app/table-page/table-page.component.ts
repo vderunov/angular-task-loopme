@@ -9,19 +9,18 @@ import {
   IPaginationEvent,
 } from '@loopme/uikit';
 import { Subject, Subscription } from 'rxjs';
-import { CoinService } from '../shared/coin.service';
+import { Store, select } from '@ngrx/store';
 import { TablePageData } from './table-page-data';
 import { ITableComponent } from './interfaces';
 import { Coin, CoinsALLProp } from '../shared/interfaces';
 import { Currency, TimePeriod } from './enums';
 import { IAppState } from '../store/state/app.state';
-import { Store, select } from '@ngrx/store';
 import {
   GetCoins,
   GetCoinsByOrder,
   GetCoinsByTimePeriod,
   GetCoinsPagination,
-  GetCoinsSelectByCurrency, GetSearchCoinBySymbols
+  GetCoinsSelectByCurrency, GetSearchCoinBySymbols,
 } from '../store/actions/table.actions';
 import { selectCoinsList } from '../store/selectors/table.selector';
 
@@ -62,30 +61,27 @@ export class TablePageComponent implements OnInit, OnDestroy, ITableComponent {
   public selectedTimePer = [new EntryItem<number, string>(1, this.mapTimePeriod.get(0))];
 
   constructor(
-    private coinService: CoinService,
     private router: Router,
-    private store: Store<IAppState>
+    private store: Store<IAppState>,
   ) { }
 
   public ngOnInit(): void {
     this.store.dispatch(new GetCoins());
-    // this.isGridLoading = true;
-    this.subscription = this.store.pipe(select(selectCoinsList)).subscribe(result => {
-        if (result) {
-          this.dataPrimitives = result.map((coin: CoinsALLProp): Coin => ({
-            id: coin.id,
-            name: new GridLink(coin.name, 'google.com'),
-            slug: coin.slug,
-            symbol: coin.symbol,
-            price: +coin.price,
-            description: coin.description,
-            numberOfMarkets: coin.numberOfMarkets,
-            numberOfExchanges: coin.numberOfExchanges,
-            change: coin.change,
-          }));
-        }
+    this.subscription = this.store.pipe(select(selectCoinsList)).subscribe((result) => {
+      if (result && result[0]) {
+        this.dataPrimitives = result.map((coin: CoinsALLProp): Coin => ({
+          id: coin.id,
+          name: new GridLink(coin.name, 'google.com'),
+          slug: coin.slug,
+          symbol: coin.symbol,
+          price: +coin.price,
+          description: coin.description,
+          numberOfMarkets: coin.numberOfMarkets,
+          numberOfExchanges: coin.numberOfExchanges,
+          change: coin.change,
+        }));
       }
-    );
+    });
   }
 
   public onGetActionGrid(event: IGridActionData): void {
@@ -118,7 +114,6 @@ export class TablePageComponent implements OnInit, OnDestroy, ITableComponent {
 
   public onSearchBySymbols(event: Event): void {
     this.isCoinsNotFound = false;
-    // this.isGridLoading = true;
     const { value } = event.target as HTMLInputElement;
     this.store.dispatch(new GetSearchCoinBySymbols({ symbols: value }));
   }

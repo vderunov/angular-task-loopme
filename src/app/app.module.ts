@@ -15,6 +15,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { TableEffects } from './store/effects/table.effects';
 import { environment } from '../environments/environment';
 import { TableService } from './services/table.service';
+import { AdditionalInfoEffects } from './store/effects/additional-info.effects';
 
 
 @NgModule({
@@ -28,7 +29,7 @@ import { TableService } from './services/table.service';
     SharedModule,
     TablePageModule,
     StoreModule.forRoot(appReducers),
-    EffectsModule.forRoot([TableEffects]),
+    EffectsModule.forRoot([TableEffects, AdditionalInfoEffects]),
     StoreRouterConnectingModule.forRoot({ stateKey: 'router' }),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     AppRoutingModule,

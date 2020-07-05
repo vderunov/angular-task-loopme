@@ -5,5 +5,5 @@ export interface ITableState {
 }
 
 export const initialTableState: ITableState = {
-  coins: null
+  coins: null,
 };

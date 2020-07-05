@@ -1,5 +1,6 @@
 import { CoinsALLProp } from '../../shared/interfaces';
 import { EntryItem } from '@loopme/uikit';
+import { Observable, Subscription } from 'rxjs';
 
 export interface IHistory {
   price: string;
@@ -35,8 +36,8 @@ export interface ILineChartComponent {
   activeLineMetrics: object[];
   selectedCurrency: EntryItem<number, string>[];
   selectedTimePer: EntryItem<number, string>[];
-
-  fetchData(): void;
+  coinHistoryData$: Observable<IData>;
+  subscription: Subscription;
 
   createChartData(data: IData): void;
 

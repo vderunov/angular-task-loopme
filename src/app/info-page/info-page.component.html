@@ -1,7 +1,7 @@
-<div *ngIf="coin">
-  <app-additional-coin-info [coin]="coin"></app-additional-coin-info>
+<div *ngIf="coin$ | async">
+  <app-additional-coin-info [coin]="coin$ | async"></app-additional-coin-info>
   <hr>
-  <app-line-chart [coin]="coin"></app-line-chart>
+  <app-line-chart [coin]="coin$ | async"></app-line-chart>
 </div>
 
 
