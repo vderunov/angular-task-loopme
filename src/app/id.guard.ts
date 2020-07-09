@@ -14,7 +14,7 @@ import {
 import { NotificationsService, NotificationTypes, takeUntilDestroy } from '@loopme/uikit';
 import { select, Store } from '@ngrx/store';
 import { IAppState } from './store/state/app.state';
-import { GetCoinById } from './store/actions/additional-info.actions';
+import { GetCoinById, ResetAdditionInfoState } from './store/actions/additional-info.actions';
 import { selectCoinById, selectCoinByIdFailure } from './store/selectors/additional-info.selector';
 
 @Injectable({ providedIn: 'root' })
@@ -48,6 +48,7 @@ export class IdGuard implements CanLoad,
   }
 
   public canDeactivate(): Observable<boolean> | boolean {
+    this.store.dispatch(new ResetAdditionInfoState());
     return true;
   }
 

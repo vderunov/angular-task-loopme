@@ -42,7 +42,7 @@ export class TableEffects {
   @Effect()
   getCoinsByCurrency$ = this.actions$.pipe(
     ofType<GetCoinsSelectByCurrency>(ETableActions.GetCoinsSelectByCurrency),
-    switchMap((state) => this.tableService.getCoins(state.payload)),
+    switchMap(({ payload }) => this.tableService.getCoins(payload)),
     switchMap((response: DefResponse) => {
       const coins = _.get(response, 'data.coins');
       return of(new GetCoinsSelectByCurrencySuccess(coins));
@@ -56,7 +56,7 @@ export class TableEffects {
   @Effect()
   getCoinsByTimePeriod$ = this.actions$.pipe(
     ofType<GetCoinsByTimePeriod>(ETableActions.GetCoinsByTimePeriod),
-    switchMap((state) => this.tableService.getCoins(state.payload)),
+    switchMap(({ payload }) => this.tableService.getCoins(payload)),
     switchMap((response: DefResponse) => {
       const coins = _.get(response, 'data.coins');
       return of(new GetCoinsByTimePeriodSuccess(coins));
@@ -70,7 +70,7 @@ export class TableEffects {
   @Effect()
   getCoinsByOrder$ = this.actions$.pipe(
     ofType<GetCoinsByOrder>(ETableActions.GetCoinsByOrder),
-    switchMap((state) => this.tableService.getCoins(state.payload)),
+    switchMap(({ payload }) => this.tableService.getCoins(payload)),
     switchMap((response: DefResponse) => {
       const coins = _.get(response, 'data.coins');
       return of(new GetCoinsByOrderSuccess(coins));
@@ -84,7 +84,7 @@ export class TableEffects {
   @Effect()
   getCoinsPagination$ = this.actions$.pipe(
     ofType<GetCoinsPagination>(ETableActions.GetCoinsPagination),
-    switchMap((state) => this.tableService.getCoins(state.payload)),
+    switchMap(({ payload }) => this.tableService.getCoins(payload)),
     switchMap((response: DefResponse) => {
       const coins = _.get(response, 'data.coins');
       return of(new GetCoinsPaginationSuccess(coins));
@@ -100,7 +100,7 @@ export class TableEffects {
     ofType<GetSearchCoinBySymbols>(ETableActions.GetSearchCoinBySymbols),
     debounceTime(1000),
     distinctUntilChanged(),
-    switchMap((state) => this.tableService.getCoins(state.payload)),
+    switchMap(({ payload }) => this.tableService.getCoins(payload)),
     switchMap((response: DefResponse) => {
       const coins = _.get(response, 'data.coins');
       return of(new GetSearchCoinBySymbolsSuccess(coins));

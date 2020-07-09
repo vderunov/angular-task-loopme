@@ -16,5 +16,5 @@ export const selectCoinHistory = createSelector(
 
 export const selectCoinByIdFailure = createSelector(
   selectCoin,
-  (state: IAdditionalInfoState) => state.error,
+  (state: IAdditionalInfoState) => state.errorId,
 );
